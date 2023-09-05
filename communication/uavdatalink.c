@@ -47,3 +47,43 @@ uint8_t UAVDataLink_pack(const uint8_t IDA, const uint8_t IDB, const uint8_t PAY
 
     return encodePacketLength;      
 }
+
+/**
+ * @param dataIn 
+ * @param dataInLength 
+ * @param dataOut 
+ * @return uint8_t 
+ */
+uint8_t UAVDataLink_decodeCOBS(const uint8_t *dataIn, const uint8_t dataInLength, uint8_t *dataOut)
+{
+    uint8_t dataOutLength = 0;
+    uint8_t nextZeroIndex = dataIn[0];
+
+    for (uint8_t dataInIndex = 1; dataInIndex < dataInLength - 1; dataInIndex++) {
+        if (dataInIndex == nextZeroIndex) {
+            dataOut[dataOutLength] = 0;
+            nextZeroIndex = dataInIndex + dataIn[dataInIndex];
+        } else {
+            dataOut[dataOutLength] = dataIn[dataInIndex];
+        }
+
+        dataOutLength++;
+    }
+    return dataOutLength;
+}
+
+/**
+ * @param arr 
+ * @param arrLength 
+ * @return uint8_t 
+ */
+uint8_t UAVDataLink_checksum(const uint8_t *arr, const uint8_t arrLength)
+{
+    uint8_t cs = 0;
+
+    for (uint8_t index = 0; index < arrLength; index++) {
+        cs ^= arr[index];
+    }
+
+    return cs;
+}
