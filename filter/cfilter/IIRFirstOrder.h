@@ -12,20 +12,30 @@
 #ifndef FILTER_IIR_FIRST_ORDER_H
 #define FILTER_IIR_FIRST_ORDER_H
 
-typedef struct
-{
-    float alpha;
-    float out;
+typedef struct {
+	float alpha;
+	float out;
 } IIRFirstOrder;
 
 /**
  * @param filt 
  * @param alpha 
  */
-void IIRFirstOrder_Init(IIRFirstOrder *filt, float alpha)
+void IIRFirstOrder_Init(IIRFirstOrder *filt, float alpha) 
 {
-    filt->alpha = alpha;
-    filt->out = 0.0f;
+	filt->alpha = alpha;
+	filt->out   = 0.0f;
+}
+
+/**
+ * @param filt 
+ * @param in 
+ * @return float 
+ */
+float IIRFirstOrder_Update(IIRFirstOrder *filt, float in) 
+{
+	filt->out = filt->alpha * filt->out + (1.0f - filt->alpha) * in;
+	return filt->out;
 }
 
 #endif
