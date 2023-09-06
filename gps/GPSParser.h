@@ -16,30 +16,57 @@
 #include <stdint.h>
 #include <string.h>
 
-#define GPS_USER_GGA
+#define GPS_USE_GGA
 
-typedef enum
+typedef enum 
 {
-    NONE,
-    GGA,
-    RMC,
-    VTG
+	NONE,
+	GGA,
+	RMC,
+	VTG
 } NMEASentenceType;
 
 typedef struct 
 {
-    float latitude_dec;
-    float longitude_dec;
-    float altitude_m;
-    float groundspeed_mps;
-    float course_deg;
-    uint8_t fix;
+	float latitude_dec;
+	float longitude_dec;
+	float altitude_m;
+	float groundSpeed_mps;
+	float course_deg;
+	float magVariation_deg;
+	float meanSeaLevel_m;
+
+	uint8_t fix;
+	uint8_t fixQuality;
+	uint8_t numSatellites;
+	uint8_t latitudeNS;
+	uint8_t longitudeEW;
+	
+	NMEASentenceType curSentence;
+
+	uint8_t readingHeader;
+	uint8_t readingSentenceData;
+
+	char headerBuf[6];
+
+	uint8_t headerBufIndex;
+
+	char segmentBuf[16];
+
+	uint8_t segmentBufIndex;
+	uint8_t segmentCount;
 } GPSData;
+
 
 /**
  * @param gpsData 
  */
 void GPSNMEAParser_Init(GPSData *gpsData);
+
+/**
+ * @param gpsData 
+ */
+void GPSNMEAParser_ExtractGGA(GPSData *gpsData);
 
 /**
  * @param gpsData 
@@ -50,5 +77,6 @@ void GPSNMEAParser_ExtractRMC(GPSData *gpsData);
  * @param gpsData 
  * @param c 
  */
-void GPSNMEAParser_Freed(GPSData *gpsData, char c);
+void GPSNMEAParser_Feed(GPSData *gpsData, char c);
+
 #endif
